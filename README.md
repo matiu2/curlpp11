@@ -19,14 +19,20 @@ A super easy c++11 curl wrapper.
 
 ### Configure then perform and re-use
     
-      curl::Easy c;
-      std::string london;
-      std::string beirut;
-      c.url("http://api.openweathermap.org/data/2.5/find?q=London")
-       .perform(london)
-       .url("http://api.openweathermap.org/data/2.5/find?q=Beirut")
-       .perform(beirut);
+    curl::Easy c;
+    std::string london;
+    std::string beirut;
+    c.url("http://api.openweathermap.org/data/2.5/find?q=London")
+      .perform(london)
+      .url("http://api.openweathermap.org/data/2.5/find?q=Beirut")
+      .perform(beirut);
 
 ### POST and PUT and DELETE
+
+      curl::Easy c;
+      c.url("http://httpbin.org/delete")
+       .DELETE()
+       .preform();
+
 
 

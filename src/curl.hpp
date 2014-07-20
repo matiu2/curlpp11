@@ -56,7 +56,7 @@ public:
   Easy& url(const char* url);
   Easy& header(const char* header);
   /// Perform the configured HTTP(S) request
-  Easy& perform() const;
+  Easy& perform();
   /// Perform the configured HTTP(S) request, and give me the result in a stream
   Easy& perform(std::ostream& result);
   /// Perform the configured HTTP(S) request, and give me the result in a string
@@ -76,6 +76,8 @@ public:
   Easy& GET();
   /// We are issuing an HTTP DELETE request
   Easy& DELETE();
+  /// Get the response code of the last perform() result
+  long responseCode();
 };
 
 }

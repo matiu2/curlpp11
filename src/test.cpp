@@ -10,7 +10,7 @@ go_bandit([]() {
     it("1.1. Can can get an HTTP page into a string", [&]() {
       std::string result;
       curl::Easy c;
-      c.setOpt(CURLOPT_VERBOSE, 1);
+      //c.setOpt(CURLOPT_VERBOSE, 1);
       c.url("http://httpbin.org/").perform(result);
       AssertThat(
           result,
@@ -21,11 +21,18 @@ go_bandit([]() {
       std::string london;
       std::string beirut;
       c.url("http://api.openweathermap.org/data/2.5/find?q=London")
-       .perform(london)
-       .url("http://api.openweathermap.org/data/2.5/find?q=Beirut")
-       .perform(beirut);
+          .perform(london)
+          .url("http://api.openweathermap.org/data/2.5/find?q=Beirut")
+          .perform(beirut);
       AssertThat(london, Contains("London"));
       AssertThat(beirut, Contains("Beirut"));
+    });
+    it("1.3. Can do a delete", [&]() {
+      curl::Easy c;
+      c.url("http://httpbin.org/delete").DELETE().perform();
+      AssertThat(c.responseCode(), Equals(200));
+      c.url("http://httpbin.org").DELETE().perform();
+      AssertThat(c.responseCode(), Equals(405));
     });
   });
 });
