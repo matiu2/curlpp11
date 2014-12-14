@@ -1,4 +1,4 @@
-#include "curl.hpp"
+#include "curlpp11.hpp"
 
 #include <istream>
 #include <sstream>
@@ -86,33 +86,48 @@ Easy &Easy::url(const char *url) {
   return *this;
 };
 
-Easy &Easy::customBody(std::ostream &result, size_t size) {
+Easy &Easy::customBody(std::istream &result, size_t size) {
   setOpt(CURLOPT_READFUNCTION, onDataToSend);
   setOpt(CURLOPT_POSTFIELDSIZE, size);
   setOpt(CURLOPT_READDATA, &result);
   return *this;
 }
 
-Easy &Easy::customBody(std::ostream &result) {
-  size_t pos = result.tellp();
-  result.seekp(0, std::ios_base::end);
-  size_t size = result.tellp();
-  result.seekp(pos);
+Easy &Easy::customBody(std::istream &result) {
+  size_t pos = result.tellg();
+  result.seekg(0, std::ios_base::end);
+  size_t size = result.tellg();
+  result.seekg(pos);
   return customBody(result, size);
 }
 
-Easy &Easy::userAgent(const char *agent) { setOpt(CURLOPT_USERAGENT, agent); }
+Easy &Easy::userAgent(const char *agent) {
+  setOpt(CURLOPT_USERAGENT, agent);
+  return *this;
+}
 
-Easy &Easy::POST() { setOpt(CURLOPT_POST, 1); }
+Easy &Easy::POST() {
+  setOpt(CURLOPT_POST, 1);
+  return *this;
+}
 
-Easy &Easy::PUT() { setOpt(CURLOPT_UPLOAD, 1); }
+Easy &Easy::PUT() {
+  setOpt(CURLOPT_UPLOAD, 1);
+  return *this;
+}
 
-Easy &Easy::GET() { setOpt(CURLOPT_HTTPGET, 1); }
+Easy &Easy::GET() {
+  setOpt(CURLOPT_HTTPGET, 1);
+  return *this;
+}
 
-Easy &Easy::DELETE() { setOpt(CURLOPT_CUSTOMREQUEST, "DELETE"); }
+Easy &Easy::DELETE() {
+  setOpt(CURLOPT_CUSTOMREQUEST, "DELETE");
+  return *this;
+}
 
-long Easy::responseCode() { 
-  long result=0;
+long Easy::responseCode() {
+  long result = 0;
   getInfo(CURLINFO_RESPONSE_CODE, &result);
   return result;
 }

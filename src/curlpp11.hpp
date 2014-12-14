@@ -47,11 +47,13 @@ public:
   Easy() : handle(curl_easy_init()) {}
   ~Easy() { curl_easy_cleanup(handle); }
   /// Set CURL library options. See http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
-  template <typename ...T> void setOpt(CURLoption opt, T... values) {
+  template <typename ...T> Easy& setOpt(CURLoption opt, T... values) {
     checkError(curl_easy_setopt(handle, opt, values...));
+    return *this;
   }
-  template <typename... Types> void getInfo(CURLINFO info, Types... args) {
+  template <typename... Types> Easy& getInfo(CURLINFO info, Types... args) {
     checkError(curl_easy_getinfo(handle, info, args...));
+    return *this;
   }
   Easy& url(const char* url);
   Easy& header(const char* header);
@@ -62,11 +64,11 @@ public:
   /// Perform the configured HTTP(S) request, and give me the result in a string
   Easy& perform(std::string& result);
   /// Set a custom body and size to send (useful for PUT and POST requests)
-  Easy& customBody(std::ostream& result, size_t size);
+  Easy& customBody(std::istream& result, size_t size);
   /// Seeks to the end of the file to get the size, then goes back to the
   /// original position, then calls customBody(std::ostream& result, size_t
   /// size)
-  Easy& customBody(std::ostream& result);
+  Easy& customBody(std::istream& result);
   Easy& userAgent(const char* agent);
   /// We are issuing an HTTP POST request
   Easy& POST();

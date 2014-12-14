@@ -1,6 +1,8 @@
-#include "curl.hpp"
+#include "curlpp11.hpp"
 #include <bandit/bandit.h>
 #include <sstream>
+#include "json_class.hpp"
+#include "parse_to_json_class.hpp"
 
 using namespace bandit;
 
@@ -10,7 +12,6 @@ go_bandit([]() {
     it("1.1. Can can get an HTTP page into a string", [&]() {
       std::string result;
       curl::Easy c;
-      //c.setOpt(CURLOPT_VERBOSE, 1);
       c.url("http://httpbin.org/").perform(result);
       AssertThat(
           result,
@@ -33,6 +34,20 @@ go_bandit([]() {
       AssertThat(c.responseCode(), Equals(200));
       c.url("http://httpbin.org").DELETE().perform();
       AssertThat(c.responseCode(), Equals(405));
+    });
+    it("1.4. Can post a stream", [&]() {
+      std::stringstream data;
+      data << "This is some data";
+      std::string reply;
+      curl::Easy c;
+      c.url("http://httpbin.org/post").customBody(data, data.str().size()).POST().perform(reply);
+      std::cout << "=============" << std::endl << reply << "=============" << std::endl; 
+      std::cout.flush();
+      json::JSON j = json::readValue(reply.begin(),  reply.end());
+      json::JMap& form = j["form"];
+      for (auto p : form)
+        std::cout << p.first << " = " << p.second << std::endl;
+      AssertThat(static_cast<const std::string&>(j["form"]["This is some data"]), Equals(""));
     });
   });
 });
