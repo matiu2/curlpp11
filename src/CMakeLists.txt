@@ -3,6 +3,7 @@ project(src)
 message("Looking at source")
 
 add_library(curlpp11 curlpp11.cpp)
+target_link_libraries(curlpp11 ${CURL_LIBRARIES})
 set_target_properties(curlpp11 PROPERTIES PUBLIC_HEADER curlpp11.hpp)
 
 install(TARGETS curlpp11
