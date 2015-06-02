@@ -56,8 +56,8 @@ void Easy::checkError(CURLcode num) const {
     throw Err(num);
 }
 
-Easy &Easy::header(const char *header) {
-  headers.add(header);
+Easy &Easy::header(const std::string &header) {
+  headers.add(header.c_str());
   setOpt(CURLOPT_HTTPHEADER, headers.base);
   return *this;
 }
@@ -81,8 +81,8 @@ Easy &Easy::perform(std::string &result) {
   return *this;
 }
 
-Easy &Easy::url(const char *url) {
-  setOpt(CURLOPT_URL, url);
+Easy &Easy::url(const std::string &url) {
+  setOpt(CURLOPT_URL, url.c_str());
   return *this;
 };
 
@@ -101,8 +101,8 @@ Easy &Easy::customBody(std::istream &result) {
   return customBody(result, size);
 }
 
-Easy &Easy::userAgent(const char *agent) {
-  setOpt(CURLOPT_USERAGENT, agent);
+Easy &Easy::userAgent(const std::string &agent) {
+  setOpt(CURLOPT_USERAGENT, agent.c_str());
   return *this;
 }
 

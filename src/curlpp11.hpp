@@ -55,8 +55,8 @@ public:
     checkError(curl_easy_getinfo(handle, info, args...));
     return *this;
   }
-  Easy& url(const char* url);
-  Easy& header(const char* header);
+  Easy& url(const std::string& url);
+  Easy& header(const std::string& header);
   /// Perform the configured HTTP(S) request
   Easy& perform();
   /// Perform the configured HTTP(S) request, and give me the result in a stream
@@ -69,7 +69,7 @@ public:
   /// original position, then calls customBody(std::ostream& result, size_t
   /// size)
   Easy& customBody(std::istream& result);
-  Easy& userAgent(const char* agent);
+  Easy& userAgent(const std::string& agent);
   /// We are issuing an HTTP POST request
   Easy& POST();
   /// We are issuing an HTTP PUT request
