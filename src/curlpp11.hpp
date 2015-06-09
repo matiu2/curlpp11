@@ -50,8 +50,13 @@ public:
     // If you didn't make the global sentry yet .. better get that done in your
     // main() func dude
     assert(GlobalSentry::exists());
+    // Make sure that we can init our curl handle
+    if (handle == nullptr)
+      throw std::runtime_error("Could not initialize curl");
   }
   ~Easy() { curl_easy_cleanup(handle); }
+  /// Reset the current curl handle (forget all headers, etc)
+  void reset() { curl_easy_reset(handle); }
   /// Set CURL library options. See http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
   template <typename ...T> Easy& setOpt(CURLoption opt, T... values) {
     checkError(curl_easy_setopt(handle, opt, values...));
