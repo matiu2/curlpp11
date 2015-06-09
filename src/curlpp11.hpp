@@ -8,6 +8,7 @@ extern "C" {
 #include <ostream>
 #include <string>
 #include <stdexcept>
+#include <cassert>
 
 namespace curl {
 
@@ -32,10 +33,11 @@ struct CURLHeaders {
 /// A create once per app, in the main curl sentry
 class GlobalSentry {
 private:
-  static bool exists;
+  static bool _exists;
 public:
   GlobalSentry();
   ~GlobalSentry();
+  static bool exists() { return _exists; }
 };
 
 class Easy {
@@ -44,7 +46,11 @@ protected:
   CURL* handle;
   void checkError(CURLcode num) const;
 public:
-  Easy() : handle(curl_easy_init()) {}
+  Easy() : handle(curl_easy_init()) {
+    // If you didn't make the global sentry yet .. better get that done in your
+    // main() func dude
+    assert(GlobalSentry::exists());
+  }
   ~Easy() { curl_easy_cleanup(handle); }
   /// Set CURL library options. See http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
   template <typename ...T> Easy& setOpt(CURLoption opt, T... values) {

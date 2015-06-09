@@ -2,11 +2,10 @@
 
 #include <istream>
 #include <sstream>
-#include <cassert>
 
 namespace curl {
 
-bool GlobalSentry::exists = false;
+bool GlobalSentry::_exists = false;
 
 /// Called by curl when we have data to recv. Puts it in a stream.
 extern "C" size_t onDataToRecv(char *ptr, size_t size, size_t nmemb,
@@ -37,8 +36,8 @@ extern "C" size_t onDataToSend(char *buffer, size_t size, size_t nitems,
 }
 
 GlobalSentry::GlobalSentry() {
-  assert(!exists); // There can be only one!
-  exists = true;
+  assert(!_exists); // There can be only one!
+  _exists = true;
   CURLcode result = curl_global_init(CURL_GLOBAL_SSL);
   if (result != 0) {
     std::stringstream msg;
