@@ -15,7 +15,7 @@ if (${BUILD_TESTS})
   add_definitions(-std=c++11)
   add_executable(tests test.cpp)
   target_link_libraries(tests curlpp11)
-  add_test(tests test)
+  add_test(tests tests)
   if (${OPENSSL_FOUND})
     set_property(
       TARGET tests

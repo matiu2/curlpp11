@@ -91,6 +91,28 @@ public:
   Easy& DELETE();
   /// Get the response code of the last perform() result
   long responseCode();
+  /// URL encodes a single string
+  std::string urlEncode(const std::string &value) {
+    return curl_easy_escape(handle, value.c_str(), value.size());
+  }
+  /// URL encodes a bunch of GET parameters. Does NOT inclued the ? at the
+  /// front; eg "a=b&c=d"
+  /// Iter should iterate over a std::pair<std::string, std::string>
+  template <typename Iter> std::string urlEncodeParams(Iter begin, Iter end) {
+    Iter last = end;
+    --last;
+    std::string result;
+    while (begin != last) {
+      const auto &name = begin->first;
+      const auto &value = begin->second;
+      result += urlEncode(name) + "=" + urlEncode(value) + "&";
+      ++begin;
+    }
+    const auto &name = last->first;
+    const auto &value = last->second;
+    result += urlEncode(name) + "=" + urlEncode(value);
+    return result;
+  }
 };
 
 }

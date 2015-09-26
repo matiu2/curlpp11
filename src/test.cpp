@@ -40,15 +40,38 @@ go_bandit([]() {
       data << "This is some data";
       std::string reply;
       curl::Easy c;
-      c.url("http://httpbin.org/post").customBody(data, data.str().size()).POST().perform(reply);
-      std::cout << "=============" << std::endl << reply << "=============" << std::endl; 
+      c.url("http://httpbin.org/post")
+          .customBody(data, data.str().size())
+          .POST()
+          .perform(reply);
+      std::cout << "=============" << std::endl << reply
+                << "=============" << std::endl;
       std::cout.flush();
-      json::JSON j = json::readValue(reply.begin(),  reply.end());
-      json::JMap& form = j["form"];
+      json::JSON j = json::readValue(reply.begin(), reply.end());
+      json::JMap &form = j["form"];
       for (auto p : form)
         std::cout << p.first << " = " << p.second << std::endl;
-      AssertThat(static_cast<const std::string&>(j["form"]["This is some data"]), Equals(""));
+      AssertThat(
+          static_cast<const std::string &>(j["form"]["This is some data"]),
+          Equals(""));
     });
+    it("1.5. Can URL encode", [&]() {
+      curl::Easy c;
+      std::string raw = "&[{}hello";
+      std::string expected = "%26%5B%7B%7Dhello";
+      std::string result = c.urlEncode(raw);
+      AssertThat(result, Equals(expected));
+    });
+    it("1.6. Can URL encode params", [&]() {
+      curl::Easy c;
+      std::vector<std::pair<std::string, std::string>> params = {
+          {"dog", "rover"}, {"&[{}hello", "_-]+)*=}there"}};
+      std::string expected =
+          "dog=rover&%26%5B%7B%7Dhello=_-%5D%2B%29%2A%3D%7Dthere";
+      std::string result = c.urlEncodeParams(params.cbegin(), params.cend());
+      AssertThat(result, Equals(expected));
+    });
+
   });
 });
 
