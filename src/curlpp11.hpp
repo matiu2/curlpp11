@@ -28,6 +28,7 @@ struct CURLHeaders {
     if (!base)
       base = last;
   }
+  operator bool() const { return !base; }
 };
 
 /// A create once per app, in the main curl sentry
@@ -67,7 +68,14 @@ public:
     return *this;
   }
   Easy& url(const std::string& url);
-  Easy& header(const std::string& header);
+  /// Add a header. If the string is empty, it just reloads all the headers from
+  /// last request. Headers are persistent for the lifetime of the object, but
+  /// this combination of commands will kill them:
+  ///    header(some_header); reset(); perform();
+  /// In order to reload all previous headers, you must call header() after
+  /// reset at least once:
+  ///    header(some_header); reset(); header(); perform();
+  Easy& header(const std::string& header={});
   /// Perform the configured HTTP(S) request
   Easy& perform();
   /// Perform the configured HTTP(S) request, and give me the result in a stream

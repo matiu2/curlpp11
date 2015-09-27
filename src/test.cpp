@@ -71,6 +71,27 @@ go_bandit([]() {
       std::string result = c.urlEncodeParams(params.cbegin(), params.cend());
       AssertThat(result, Equals(expected));
     });
+    it("1.7. Keeps headers", [&]() {
+      curl::Easy c;
+      std::string as;
+      std::string bs;
+      std::string cs;
+      c.url("http://httpdbin.org/headers")
+          .header("header-a: 1")
+          .perform(as)
+          .url("http://httpdbin.org/headers")
+          .perform(bs) // Because we didn't call 'header' again, the old header will not be present
+          .url("http://httpdbin.org/headers")
+          .header()   // Now we called header, it should load all previous headers
+          .perform(cs);
+      using namespace json;
+      JMap a = readValue(as);
+      JMap b = readValue(bs);
+      JMap c = readValue(cs);
+      AssertThat(a, Contains("header-a");
+      AssertThat(b, Not().Containing("header-a"));
+      AssertThat(c, Contains("header-a");
+    });
 
   });
 });
