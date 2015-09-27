@@ -56,7 +56,7 @@ void Easy::checkError(CURLcode num) const {
 }
 
 Easy &Easy::header(const std::string &header) {
-  if (header)
+  if (!header.empty())
     headers.add(header.c_str());
   setOpt(CURLOPT_HTTPHEADER, headers.base);
   return *this;

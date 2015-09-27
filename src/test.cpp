@@ -72,25 +72,30 @@ go_bandit([]() {
       AssertThat(result, Equals(expected));
     });
     it("1.7. Keeps headers", [&]() {
-      curl::Easy c;
+      curl::Easy curl;
       std::string as;
       std::string bs;
       std::string cs;
-      c.url("http://httpdbin.org/headers")
-          .header("header-a: 1")
+      curl.url("http://httpbin.org/headers")
+          .header("Header-A: 1")
           .perform(as)
-          .url("http://httpdbin.org/headers")
-          .perform(bs) // Because we didn't call 'header' again, the old header will not be present
-          .url("http://httpdbin.org/headers")
-          .header()   // Now we called header, it should load all previous headers
+          .reset() // This will remove all curl options. The header list exists
+                   // still, but is not associated with the curl handle any more
+          .url("http://httpbin.org/headers")
+          .perform(bs) // Because we didn't call 'header' again, the old header
+                       // will not be present
+          .reset()
+          .url("http://httpbin.org/headers")
+          .header() // Now we called header, it will re-associate the old hear
+                    // lists with the curl handle
           .perform(cs);
       using namespace json;
-      JMap a = readValue(as);
-      JMap b = readValue(bs);
-      JMap c = readValue(cs);
-      AssertThat(a, Contains("header-a");
-      AssertThat(b, Not().Containing("header-a"));
-      AssertThat(c, Contains("header-a");
+      JMap a = readValue(as.begin(), as.end()).at("headers");
+      JMap b = readValue(bs.begin(), bs.end()).at("headers");
+      JMap c = readValue(cs.begin(), cs.end()).at("headers");
+      AssertThat(a, Contains("Header-A"));
+      AssertThat(b, Is().Not().Containing("Header-A"));
+      AssertThat(c, Contains("Header-A"));
     });
 
   });

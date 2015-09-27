@@ -57,7 +57,10 @@ public:
   }
   ~Easy() { curl_easy_cleanup(handle); }
   /// Reset the current curl handle (forget all headers, etc)
-  void reset() { curl_easy_reset(handle); }
+  Easy &reset() {
+    curl_easy_reset(handle);
+    return *this;
+  }
   /// Set CURL library options. See http://curl.haxx.se/libcurl/c/curl_easy_setopt.html
   template <typename ...T> Easy& setOpt(CURLoption opt, T... values) {
     checkError(curl_easy_setopt(handle, opt, values...));
