@@ -27,22 +27,20 @@ if (${BUILD_TESTS})
       )
       SET(BANDIT_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/3rd_party/src/bandit)
   endif(${BANDIT_INCLUDE_DIR})
-  # JSON needed for interpreting test results
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/json_class.hpp ${CMAKE_CURRENT_BINARY_DIR}/json_class.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parse_to_json_class.hpp ${CMAKE_CURRENT_BINARY_DIR}/parse_to_json_class.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/unicode.hpp ${CMAKE_CURRENT_BINARY_DIR}/unicode.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/utils.hpp ${CMAKE_CURRENT_BINARY_DIR}/utils.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parser/LocatingIterator.hpp ${CMAKE_CURRENT_BINARY_DIR}/parser/LocatingIterator.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parser/array.hpp ${CMAKE_CURRENT_BINARY_DIR}/parser/array.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parser/error.hpp ${CMAKE_CURRENT_BINARY_DIR}/parser/error.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parser/number.hpp ${CMAKE_CURRENT_BINARY_DIR}/parser/number.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parser/object.hpp ${CMAKE_CURRENT_BINARY_DIR}/parser/object.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parser/outer.hpp ${CMAKE_CURRENT_BINARY_DIR}/parser/outer.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parser/status.hpp ${CMAKE_CURRENT_BINARY_DIR}/parser/status.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parser/string.hpp ${CMAKE_CURRENT_BINARY_DIR}/parser/string.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parser/utf8_writer.hpp ${CMAKE_CURRENT_BINARY_DIR}/parser/utf8_writer.hpp)
-  file(DOWNLOAD https://raw.githubusercontent.com/matiu2/jsonpp11/master/src/parser/utils.hpp ${CMAKE_CURRENT_BINARY_DIR}/parser/utils.hpp)
-  set(JSON_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR})
+
+  # JSONPP11
+  ExternalProject_Add(jsonpp11
+      PREFIX 3rd_party
+      GIT_REPOSITORY https://github.com/matiu2/jsonpp11.git
+      TLS_VERIFY true
+      TLS_CAINFO certs/DigiCertHighAssuranceEVRootCA.crt
+      TEST_BEFORE_INSTALL 0
+      TEST_COMMAND ctest
+      UPDATE_COMMAND "" # Skip annoying updates for every build
+      INSTALL_COMMAND ""
+  )
+  SET(JSON_INCLUDE_DIR ${CMAKE_CURRENT_BINARY_DIR}/3rd_party/src/jsonpp11/src)
+
 endif(${BUILD_TESTS})
 
 add_subdirectory(src)

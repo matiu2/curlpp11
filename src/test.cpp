@@ -5,8 +5,10 @@
 #include "parse_to_json_class.hpp"
 
 using namespace bandit;
+using namespace snowhouse;
 
 go_bandit([]() {
+
 
   describe("curlpp11", [&]() {
     it("1.1. Can can get an HTTP page into a string", [&]() {
@@ -21,9 +23,9 @@ go_bandit([]() {
       curl::Easy c;
       std::string london;
       std::string beirut;
-      c.url("http://api.openweathermap.org/data/2.5/find?q=London")
+      c.url("https://en.wikipedia.org/wiki/London")
           .perform(london)
-          .url("http://api.openweathermap.org/data/2.5/find?q=Beirut")
+          .url("https://en.wikipedia.org/wiki/Beirut")
           .perform(beirut);
       AssertThat(london, Contains("London"));
       AssertThat(beirut, Contains("Beirut"));
